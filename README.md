@@ -16,18 +16,6 @@ This repository documents my journey of learning backend development through han
 * Backend Architecture
 * API Development
 
-## Repository Structure
-
-```text
-Backend/
-│
-├── 01-routing-basics
-├── 02-middleware-basics
-├── 03-rest-api
-├── 04-mongodb-crud
-├── 05-jwt-authentication
-└── more-projects-coming-soon
-```
 
 ## Learning Progress
 
