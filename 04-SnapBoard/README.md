@@ -91,8 +91,8 @@ Make sure you have these installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/snapboard.git
-cd snapboard
+git clone https://github.com/shahfahad22/Backend.git
+cd Backend/04-SnapBoard
 ```
 
 ### 2. Backend Setup
