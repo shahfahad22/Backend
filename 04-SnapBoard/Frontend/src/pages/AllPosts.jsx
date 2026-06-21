@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 
+
+const API_URL = "https://backend-six-pi-nvpbisu8s9.vercel.app";
+
+
 function AllPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+
 
   useEffect(() => {
     fetchPosts();
@@ -12,7 +17,7 @@ function AllPosts() {
 
   async function fetchPosts() {
     try {
-      const res = await fetch("http://localhost:3000/posts");
+      const res = await fetch(`${API_URL}/posts`);
       const data = await res.json();
       if (res.ok) {
         setPosts(data.posts);
@@ -32,7 +37,7 @@ function AllPosts() {
 
     try {
       setDeletingId(id);
-      const res = await fetch(`http://localhost:3000/delete-post/${id}`, {
+      const res = await fetch(`${API_URL}/delete-post/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
