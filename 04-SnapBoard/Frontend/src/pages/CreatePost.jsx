@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+
+const API_URL = "https://backend-six-pi-nvpbisu8s9.vercel.app";
+
 function CreatePost() {
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState(null);
@@ -13,6 +16,7 @@ function CreatePost() {
     setImage(file);
     if (file) setPreview(URL.createObjectURL(file));
   }
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,7 +34,7 @@ function CreatePost() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/create-post", {
+      const res = await fetch(`${API_URL}/create-post`, {
         method: "POST",
         body: formData,
       });
