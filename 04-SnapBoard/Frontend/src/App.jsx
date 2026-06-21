@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <nav className="navbar">
-        <h1>📸 PostApp</h1>
+        <h1>📸 SnapBoard</h1>
         {page === "create" ? (
           <button onClick={() => setPage("all")}>All Posts →</button>
         ) : (
