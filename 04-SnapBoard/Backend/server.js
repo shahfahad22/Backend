@@ -57,3 +57,5 @@ app.delete("/delete-post/:id", async (req, res)=>{
 app.listen(port, () => {
   console.log("Your Server Is Running 3000");
 });
+
+module.exports = app;
