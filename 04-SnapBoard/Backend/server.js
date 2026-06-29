@@ -16,19 +16,26 @@ const upload = multer({ storage: multer.memoryStorage() });
 connectDB();
 
 app.post("/create-post", upload.single("image"), async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
+  try {
+    const result = await uploadFile(req.file.buffer);
 
-  const result = await uploadFile(req.file.buffer);
+    const post = await postModel.create({
+      image: result.url,
+      caption: req.body.caption,
+    });
 
-  const post = await postModel.create({
-    image: result.url,
-    caption: req.body.caption,
-  });
-  return res.status(201).json({
-    message: "Post Created sucessfully",
-    post,
-  });
+    return res.status(201).json({
+      message: "Post Created Successfully",
+      post,
+    });
+  } catch (err) {
+    console.error("Create Post Error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 });
 
 app.get("/posts", async (req, res) => {
