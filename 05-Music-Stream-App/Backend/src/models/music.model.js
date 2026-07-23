@@ -4,19 +4,19 @@ const mongoose  = require("mongoose")
 const musicSchema = new mongoose.Schema({
     uri : {
         type : String,
-        require : true
+        required : true
     },
     title : {
         type : String,
-        require : true
+        required : true
     },
     artist : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "user",
-        require : true
+        required : true
     }
 })
 
-const musicModel = mongoose.model("user", musicSchema)
+const musicModel = mongoose.model("music", musicSchema)
 
 module.exports = musicModel
