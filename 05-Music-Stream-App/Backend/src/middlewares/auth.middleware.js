@@ -40,21 +40,9 @@ async function authUser(req, res, next) {
     req.user = decoded;
 
     next();
-  
-} catch (error) {
+  } catch (error) {
     res.status(401).json({ message: "Unauthorized" });
   }
 }
 
-
-
-async function getAllAlbums(req, res) {
-    const albums = await albumModel.find().populate("artist", "userName", "email").populate("musics")
-
-    res.status(200).json({
-        message : "Album Fetched Successfully",
-        albums : albums
-    })
-}
-
-module.exports = { authArtist, authUser, getAllAlbums };
+module.exports = { authArtist, authUser };

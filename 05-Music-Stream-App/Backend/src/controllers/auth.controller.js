@@ -2,22 +2,18 @@ const userSchema = require("../models/user.model");
 const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
 async function registerUser(req, res) {
   const { userName, email, password, role = "user" } = req.body;
 
   const isUserAlreadyExists = await userSchema.findOne({
     $or: [{ userName }, { email }],
-    
   });
-
 
   if (isUserAlreadyExists) {
     return res
       .status(409)
       .json({ message: "Username ya Email already exists" });
   }
-
 
   const hash = await bcrypt.hash(password, 10);
 
@@ -60,11 +56,7 @@ async function loginUser(req, res) {
     return res.status(401).json({ message: "Invalid Credentials" });
   }
 
-
   const isPasswordValid = await bcrypt.compare(password, user.password);
-
-
-
 
   if (!isPasswordValid) {
     return res.status(401).json({ message: "Invalid Credentials" });
@@ -91,10 +83,9 @@ async function loginUser(req, res) {
   });
 }
 
-
 async function logOutUser(req, res) {
-  res.clearCookie("token")
-  res.status(200).json({message : "User Logged out Successfully"})
+  res.clearCookie("token");
+  res.status(200).json({ message: "User Logged out Successfully" });
 }
 
-module.exports = { registerUser, loginUser , logOutUser };
+module.exports = { registerUser, loginUser, logOutUser };
