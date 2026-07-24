@@ -7,7 +7,6 @@ const ImageKitClient = new ImageKit({
 })
 
 async function  uploadFile(file) {
-    console.log("Storage Service Called");
     const result = await ImageKitClient.files.upload({
         file,
         fileName : "music_" + Date.now() + ".mp3",

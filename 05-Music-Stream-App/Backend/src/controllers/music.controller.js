@@ -2,6 +2,7 @@ const musicModel = require("../models/music.model");
 const albumMusic = require("../models/album.model")
 const { uploadFile } = require("../services/storage.services");
 const jsonwebtoken = require("jsonwebtoken");
+const albumModel = require("../models/album.model");
 
 async function createMusic(req, res) {
   
@@ -15,7 +16,7 @@ async function createMusic(req, res) {
 
 
      const result = await uploadFile(file.buffer.toString("base64"));
-     console.log("Upload Result:", result);
+    
 
   const createMusic = await musicModel.create({
     uri: result.url,
@@ -36,14 +37,18 @@ async function createMusic(req, res) {
 
 
 async function createAlbum(req, res) {
-   
+
         const {title, musicIds } = req.body
+          
 
         const album = await albumMusic.create({
             title,
             artist : req.user.id,
             musics : musicIds
         })
+
+        console.log("Album Saved:", album);
+
         res.status(201).json({
             message : "Album Created Successfully",
             album : {
@@ -57,5 +62,43 @@ async function createAlbum(req, res) {
     } 
 
 
+ async function getAllMusics(req, res) {
+      
+      const musics = await musicModel
+      .find()
+      .limit(10)
+      .populate("artist", "userName email")
 
-module.exports = { createMusic, createAlbum };
+      res.status(200).json({
+        message : "Musics fetched Successfully",
+        musics : musics
+      })
+    }
+
+
+    
+    async function getAllAlbums(req, res) {
+        const albums = await albumMusic.find().select("title artist").populate("artist", "userName email")
+    
+
+    console.log(JSON.stringify(albums, null, 2));
+        res.status(200).json({
+            message : "Album Fetched Successfully",
+            albums : albums
+        })
+    }
+    
+
+    async function getAlbumById(req, res) {
+      const albumId = req.params.albumId
+
+      const album = await albumModel.findById(albumId).populate("artist", "userName email").populate("musics", "title uri")
+
+      res.status(200).json({
+        message : "Album Fetched Successfully",
+        album : album,
+      })
+    }
+
+
+module.exports = { createMusic, createAlbum, getAllMusics, getAllAlbums, getAlbumById };
