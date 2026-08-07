@@ -92,10 +92,34 @@ async function getAlbumById(req, res) {
   });
 }
 
+async function deleteMusic(req, res) {
+  const musicId = req.params.musicId
+
+  const music = await musicModel.findById(musicId)
+
+  if(!music){
+    return res.status(404).json({message : "Music Not Found"})
+  }
+
+  if(music.artist.toString() !== req.user.id){
+    return res.status(403).json({message : "You can only delete your own tracks"})
+  }
+
+  await musicModel.findByIdAndDelete(musicId)
+
+  await albumModel.updateMany(
+    {musics : musicId },
+    {$pull : {musics : musicId } }
+  )
+
+  res.status(200).json({message : "Music deleted successfully" })
+}
+
 module.exports = {
   createMusic,
   createAlbum,
   getAllMusics,
   getAllAlbums,
   getAlbumById,
+  deleteMusic,
 };

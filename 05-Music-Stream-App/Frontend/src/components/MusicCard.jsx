@@ -1,9 +1,16 @@
 import { useState, useRef } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Trash2 } from "lucide-react";
+import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../api/getErrorMessage";
 
-export default function MusicCard({ music, index }) {
+export default function MusicCard({ music, index, onDeleted }) {
+  const { user, isArtist } = useAuth();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const audioRef = useRef(null);
+
+  const isOwner = isArtist && user?.id === music.artist?._id;
 
   function togglePlay() {
     if (!audioRef.current) return;
@@ -13,6 +20,21 @@ export default function MusicCard({ music, index }) {
       audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
+  }
+
+  async function handleDelete() {
+    const confirmed = window.confirm(`Delete "${music.title}"? This can't be undone.`);
+    if (!confirmed) return;
+
+    setDeleting(true);
+    try {
+      await api.delete(`/api/music/${music._id}`);
+      onDeleted?.(music._id);
+    } catch (err) {
+      alert(getErrorMessage(err, "Couldn't delete this track."));
+    } finally {
+      setDeleting(false);
+    }
   }
 
   return (
@@ -39,6 +61,17 @@ export default function MusicCard({ music, index }) {
           {music.artist?.userName || "Unknown artist"}
         </p>
       </div>
+
+      {isOwner && (
+        <button
+          onClick={handleDelete}
+          disabled={deleting}
+          aria-label={`Delete ${music.title}`}
+          className="shrink-0 rounded-md p-2 text-muted transition hover:bg-danger/10 hover:text-danger disabled:opacity-50"
+        >
+          <Trash2 className="h-4 w-4" strokeWidth={1.5} />
+        </button>
+      )}
 
       <audio
         ref={audioRef}

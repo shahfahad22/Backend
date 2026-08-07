@@ -19,15 +19,21 @@ router.post("/album", authMiddleware.authArtist, musicController.createAlbum);
 // router.get("/", authMiddleware.authAny, musicController.getAllMusics);
 // router.get("/albums", authMiddleware.authAny, musicController.getAllAlbums);
 
+router.get("/", musicController.getAllMusics);
+router.get("/albums", musicController.getAllAlbums);
 
-router.get("/",  musicController.getAllMusics);
- router.get("/albums",  musicController.getAllAlbums);
-
+// router.get(
+//   "/albums/:albumId",
+//   authMiddleware.authUser,
+//   musicController.getAlbumById,
+// );
 
 router.get(
   "/albums/:albumId",
-  authMiddleware.authUser,
+  authMiddleware.authAny,
   musicController.getAlbumById,
 );
+
+router.delete("/:musicId", authMiddleware.authArtist, musicController.deleteMusic)
 
 module.exports = router;
