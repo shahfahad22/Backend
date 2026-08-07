@@ -34,6 +34,10 @@ router.get(
   musicController.getAlbumById,
 );
 
+router.delete("/albums/:albumId", authMiddleware.authArtist,  musicController.deleteAlbum)
+router.delete("/album/:albumId/musics/:musicId", authMiddleware.authArtist, musicController.removeMusicFromAlbum)
+
+
 router.delete("/:musicId", authMiddleware.authArtist, musicController.deleteMusic)
 
 module.exports = router;
