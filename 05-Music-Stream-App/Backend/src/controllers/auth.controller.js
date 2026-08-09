@@ -32,7 +32,11 @@ async function registerUser(req, res) {
     process.env.JWT_SECRET,
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   res.status(201).json({
     message: "User Register Successfully",
@@ -40,7 +44,6 @@ async function registerUser(req, res) {
       id: newUser._id,
       userName: newUser.userName,
       email: newUser.email,
-      password: newUser.password,
       role: newUser.role,
     },
   });
@@ -70,7 +73,11 @@ async function loginUser(req, res) {
     process.env.JWT_SECRET,
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   res.status(200).json({
     message: "Login Successfully",
@@ -84,7 +91,11 @@ async function loginUser(req, res) {
 }
 
 async function logOutUser(req, res) {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.status(200).json({ message: "User Logged out Successfully" });
 }
 
