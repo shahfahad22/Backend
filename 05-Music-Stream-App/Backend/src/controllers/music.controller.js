@@ -130,12 +130,17 @@ async function deleteAlbum(req, res) {
   }
 
   await albumModel.findByIdAndDelete(albumId)
+
+  res.status(200).json({ message: "Album deleted successfully" });
 }
 
 
 
-async function removeMusicFromAlbum(params) {
+async function removeMusicFromAlbum(req, res) {
   const {albumId, musicId} = req.params;
+
+
+  const album = await albumModel.findById(albumId);
 
   if(!album){
     return res.status(404).json({message : "Album not found" })
@@ -143,7 +148,7 @@ async function removeMusicFromAlbum(params) {
     return res.status(403).json({message : "You can only edit your own albums" })
   }
 
-  album.musics = album.filter((id)=> id.toString() !== musicId);
+  album.musics = album.musics.filter((id)=> id.toString() !== musicId);
   await album.save();
 
   res.status(200).json({ message: "Track removed from album" });

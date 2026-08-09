@@ -8,6 +8,7 @@ export default function Home() {
   const [musics, setMusics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,16 +39,18 @@ export default function Home() {
         {!loading && musics.length === 0 && !error && (
           <EmptyState title="No tracks yet" subtitle="Once an artist uploads a track, it'll show up here." />
         )}
-       {musics.map((music, index) => (
-  <MusicCard
-    key={music._id}
-    music={music}
-    index={index}
-    onDeleted={(deletedId) =>
-      setMusics((prev) => prev.filter((m) => m._id !== deletedId))
-    }
-  />
-))}
+        {musics.map((music, index) => (
+          <MusicCard
+            key={music._id}
+            music={music}
+            index={index}
+            activeId={activeId}
+            onPlay={setActiveId}
+            onDeleted={(deletedId) =>
+              setMusics((prev) => prev.filter((m) => m._id !== deletedId))
+            }
+          />
+        ))}
       </div>
     </div>
   );

@@ -1,29 +1,49 @@
-import { useState, useRef } from "react";
-import { Play, Pause, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Play, Pause, Trash2, X } from "lucide-react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { getErrorMessage } from "../api/getErrorMessage";
 
-export default function MusicCard({ music, index, onDeleted }) {
+export default function MusicCard({
+  music,
+  index,
+  onDeleted,
+  albumId,
+  isAlbumOwner,
+  onRemovedFromAlbum,
+  activeId,
+  onPlay,
+}) {
   const { user, isArtist } = useAuth();
-  const [isPlaying, setIsPlaying] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const audioRef = useRef(null);
 
-  const isOwner = isArtist && user?.id === music.artist?._id;
+  const isTrackOwner = isArtist && user?.id === music.artist?._id;
+  const isPlaying = activeId === music._id;
+
+  // Jab koi doosri track active ho jaye, ye apne aap pause ho jaye
+  useEffect(() => {
+    if (activeId !== music._id && audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [activeId, music._id]);
 
   function togglePlay() {
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
+      onPlay?.(null);
     } else {
       audioRef.current.play();
+      onPlay?.(music._id);
     }
-    setIsPlaying(!isPlaying);
   }
 
   async function handleDelete() {
-    const confirmed = window.confirm(`Delete "${music.title}"? This can't be undone.`);
+    const confirmed = window.confirm(
+      `Delete "${music.title}" permanently? This can't be undone.`,
+    );
     if (!confirmed) return;
 
     setDeleting(true);
@@ -34,6 +54,23 @@ export default function MusicCard({ music, index, onDeleted }) {
       alert(getErrorMessage(err, "Couldn't delete this track."));
     } finally {
       setDeleting(false);
+    }
+  }
+
+  async function handleRemoveFromAlbum() {
+    const confirmed = window.confirm(
+      `Remove "${music.title}" from this album? The track itself won't be deleted.`,
+    );
+    if (!confirmed) return;
+
+    setRemoving(true);
+    try {
+      await api.delete(`/api/music/albums/${albumId}/musics/${music._id}`);
+      onRemovedFromAlbum?.(music._id);
+    } catch (err) {
+      alert(getErrorMessage(err, "Couldn't remove this track from the album."));
+    } finally {
+      setRemoving(false);
     }
   }
 
@@ -62,11 +99,24 @@ export default function MusicCard({ music, index, onDeleted }) {
         </p>
       </div>
 
-      {isOwner && (
+      {albumId && isAlbumOwner && (
+        <button
+          onClick={handleRemoveFromAlbum}
+          disabled={removing}
+          aria-label={`Remove ${music.title} from album`}
+          title="Remove from this album"
+          className="shrink-0 rounded-md p-2 text-muted transition hover:bg-surface2 hover:text-ink disabled:opacity-50"
+        >
+          <X className="h-4 w-4" strokeWidth={1.5} />
+        </button>
+      )}
+
+      {isTrackOwner && (
         <button
           onClick={handleDelete}
           disabled={deleting}
           aria-label={`Delete ${music.title}`}
+          title="Delete track permanently"
           className="shrink-0 rounded-md p-2 text-muted transition hover:bg-danger/10 hover:text-danger disabled:opacity-50"
         >
           <Trash2 className="h-4 w-4" strokeWidth={1.5} />
@@ -76,9 +126,7 @@ export default function MusicCard({ music, index, onDeleted }) {
       <audio
         ref={audioRef}
         src={music.uri}
-        onEnded={() => setIsPlaying(false)}
-        onPause={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
+        onEnded={() => onPlay?.(null)}
       />
     </div>
   );
