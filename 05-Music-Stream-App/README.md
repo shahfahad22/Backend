@@ -4,7 +4,7 @@
 
 A full-stack music streaming app where **artists** upload tracks and organize them into albums, and **listeners** browse and play everything. Built as a two-role MERN application with cookie-based JWT auth.
 
-**[🎧 View Frontend](https://groove-music-app-pi.vercel.app)** &nbsp;·&nbsp; **[⚙️ View Backend](https://groove-backend.vercel.app)**
+**[🎧 View Frontend](https://groove-music-app-pi.vercel.app/)** &nbsp;·&nbsp; **[⚙️ View Backend](https://groove-backend.vercel.app)**
 
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-Vite-61DAFB?style=flat-square&logo=react&logoColor=black)
