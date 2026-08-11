@@ -28,9 +28,15 @@ router.get("/albums", musicController.getAllAlbums);
 //   musicController.getAlbumById,
 // );
 
+// router.get(
+//   "/albums/:albumId",
+//   authMiddleware.authAny,
+//   musicController.getAlbumById,
+// );
+
+
 router.get(
   "/albums/:albumId",
-  authMiddleware.authAny,
   musicController.getAlbumById,
 );
 
