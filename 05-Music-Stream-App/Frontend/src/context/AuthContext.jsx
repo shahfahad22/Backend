@@ -15,7 +15,8 @@ export function AuthProvider({ children }) {
       persist(null);
     }
     window.addEventListener("groove:unauthorized", handleUnauthorized);
-    return () => window.removeEventListener("groove:unauthorized", handleUnauthorized);
+    return () =>
+      window.removeEventListener("groove:unauthorized", handleUnauthorized);
   }, []);
 
   function persist(userData) {
@@ -28,13 +29,22 @@ export function AuthProvider({ children }) {
   }
 
   async function register({ userName, email, password, role }) {
-    const { data } = await api.post("/api/auth/register", { userName, email, password, role });
+    const { data } = await api.post("/api/auth/register", {
+      userName,
+      email,
+      password,
+      role,
+    });
     persist(data.user);
     return data.user;
   }
 
   async function login({ userName, email, password }) {
-    const { data } = await api.post("/api/auth/login", { userName, email, password });
+    const { data } = await api.post("/api/auth/login", {
+      userName,
+      email,
+      password,
+    });
     persist(data.user);
     return data.user;
   }
